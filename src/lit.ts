@@ -23,8 +23,17 @@ class Lit {
         await this.connect();
       }
       // @ts-ignore
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      // MetaMask requires requesting permission to connect users accounts
+      await provider.send("eth_requestAccounts", []);
+
+      // The MetaMask plugin also allows signing transactions to
+      // send ether and pay to change state within the blockchain.
+      // For this, you need the account signer...
+      const signer = provider.getSigner();
+
+      const address = await signer.getAddress();
 
       const { capacityDelegationAuthSig } =
         await this.litNodeClient!.createCapacityDelegationAuthSig({
@@ -62,7 +71,7 @@ class Lit {
 
         let siweMessage = new SiweMessage({
           domain: window.location.host,
-          address: signer.address,
+          address: address,
           statement: "Some custom statement.",
           uri,
           version: "1",
@@ -80,7 +89,7 @@ class Lit {
           sig: signature.replace("0x", ""),
           derivedVia: "web3.eth.personal.sign",
           signedMessage: messageToSign,
-          address: signer.address,
+          address: address,
         };
 
         return authSig;
@@ -103,5 +112,13 @@ class Lit {
     }
   }
 }
+
+const l = {
+  sig: "618264d05f0189ede6e273aaea31506d5e93066b38c7c3c4d1952f7ad3c2a279396698ee7e5803f5518de5ad1052e7031653646442db1d2b894ee17b25c48d4c1b",
+  derivedVia: "web3.eth.personal.sign",
+  signedMessage:
+    "localhost:3000 wants you to sign in with your Ethereum account:\n0x2746c12CEA9403148202Ed1a7F362987c17cc249\n\nSome custom statement. I further authorize the stated URI to perform the following actions on my behalf: (1) 'Threshold': 'Execution' for 'lit-litaction://*'.\n\nURI: lit:session:a430283f1eddda1032c5b00f4b97f859d296c75b64c5016b40d96eae35713a0d\nVersion: 1\nChain ID: 1\nNonce: Ur0JmKH9Z7PCJABt0\nIssued At: 2024-04-05T19:00:38.967Z\nExpiration Time: 2024-04-05T20:00:38.950Z\nResources:\n- urn:recap:eyJhdHQiOnt9LCJwcmYiOltdfQ\n- urn:recap:eyJhdHQiOnsibGl0LWxpdGFjdGlvbjovLyoiOnsiVGhyZXNob2xkL0V4ZWN1dGlvbiI6W3t9XX19LCJwcmYiOltdfQ",
+  address: "0x2746c12CEA9403148202Ed1a7F362987c17cc249",
+};
 
 export default new Lit();
