@@ -30,7 +30,7 @@ class Lit {
         await this.litNodeClient!.createCapacityDelegationAuthSig({
           uses: "1",
           dAppOwnerWallet: signer,
-          capacityTokenId: "431",
+          capacityTokenId: "725", // replace with your token id
           domain: window.location.host,
         });
 
