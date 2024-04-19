@@ -13,6 +13,8 @@ class Lit {
   private litNodeClient;
 
   async connect() {
+    LitJsSdk.disconnectWeb3();
+
     await client.connect();
     this.litNodeClient = client;
   }

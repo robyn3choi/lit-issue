@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@lit-protocol/lit-node-client": "^4.2.0",
+    "@lit-protocol/lit-node-client": "^5.0.0",
     "ethers": "^6.10.0",
     "next": "14.1.0",
     "react": "^18",
